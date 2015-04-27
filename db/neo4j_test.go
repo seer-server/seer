@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestQueryingNeo4j() {
+func TestQueryingNeo4j(t *testing.T) {
 	db, err := New()
 	if err != nil {
 		t.Error(err)
@@ -13,15 +13,8 @@ func TestQueryingNeo4j() {
 	}
 	defer db.Close()
 
-	tx, err := db.Begin()
-	if err != nil {
-		t.Error(err)
-
-		return
-	}
-
 	name := "screenname"
-	stmt, err := tx.Prepare("CREATE (:Test {value: {0}, name: {1}})")
+	stmt, err := db.Prepare("CREATE (:Test {value: {0}, name: {1}})")
 	if err != nil {
 		t.Error(err)
 
@@ -30,7 +23,7 @@ func TestQueryingNeo4j() {
 
 	stmt.Exec("test value", name)
 
-	stmt, err = tx.Prepare(`
+	stmt, err = db.Prepare(`
 		MATCH (t:Test)
 		WHERE t.value = {0}
 		RETURN t.name
@@ -41,7 +34,7 @@ func TestQueryingNeo4j() {
 		return
 	}
 
-	rows, err := stmt.Query("some value")
+	rows, err := stmt.Query("test value")
 	if err != nil {
 		t.Error(err)
 
@@ -57,6 +50,19 @@ func TestQueryingNeo4j() {
 			return
 		}
 	}
+
+	stmt, err = db.Prepare(`
+		MATCH (t:Test)
+		WHERE t.value = {0}
+		DELETE t
+	`)
+	if err != nil {
+		t.Error(err)
+
+		return
+	}
+
+	stmt.Exec("test value")
 
 	if retName != name {
 		t.Errorf("Expected %q but found %q", name, retName)
