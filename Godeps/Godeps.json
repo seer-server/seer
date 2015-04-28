@@ -11,10 +11,6 @@
 			"ImportPath": "github.com/bbuck/go-flag",
 			"Comment": "v0",
 			"Rev": "5d09c81f7fcfc0ae218bc9f2c8ed7ce065bbf6f5"
-		},
-		{
-			"ImportPath": "github.com/mgutz/ansi",
-			"Rev": "22ddafb24adc4786c83841aa3021349818c898e4"
 		}
 	]
 }

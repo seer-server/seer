@@ -4,24 +4,20 @@ import (
 	"log"
 	"os"
 	"strings"
-
-	"github.com/mgutz/ansi"
 )
 
 type LogLevel int
 
-var levelErrorStr, levelInfoStr, levelVerboseStr, levelDebugStr string
-
 func (l LogLevel) String() string {
 	switch l {
 	case LogError:
-		return levelErrorStr
+		return "error"
 	case LogInfo:
-		return levelInfoStr
+		return "info"
 	case LogVerbose:
-		return levelVerboseStr
+		return "verbose"
 	case LogDebug:
-		return levelDebugStr
+		return "debug"
 	default:
 		return "INVALID"
 	}
@@ -48,13 +44,6 @@ var (
 	logMap   = make(map[string]*Logger)
 	logFlags = log.Ldate | log.Ltime | log.Lshortfile
 )
-
-func init() {
-	levelErrorStr = ansi.Color("error", "red+h")
-	levelInfoStr = ansi.Color("info", "yellow+h")
-	levelVerboseStr = ansi.Color("verbose", "green")
-	levelDebugStr = ansi.Color("debug", "blue")
-}
 
 func Make(name string, filename string, maxLevel LogLevel) *Logger {
 	var (
@@ -97,6 +86,6 @@ func (l *Logger) Fatal(err error, exitCode int) {
 
 func (l *Logger) Log(level LogLevel, msg string) {
 	if level <= l.maxLevel {
-		l.Logger.Printf("%20s   %s", level, msg)
+		l.Logger.Printf("%10s   %s", level, msg)
 	}
 }
